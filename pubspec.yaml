@@ -1,0 +1,10 @@
+name: log_me
+description: Colorful logger utility.
+version: 0.1.0
+repository: https://github.com/lapuske/log_me
+
+environment:
+  sdk: ^3.1.3
+
+dev_dependencies:
+  lints: ^2.0.0
