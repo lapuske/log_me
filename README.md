@@ -5,7 +5,7 @@
 
 __Note__, that your console must support [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code) for colors to be visible.
 
-![Screenshot](/screenshot.png "Screenshot")
+![Screenshot](https://raw.githubusercontent.com/lapuske/log_me/main/screenshot.png "Screenshot")
 
 * [Getting started](#getting-started)
 * [Usage](#usage)
