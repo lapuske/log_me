@@ -1,7 +1,7 @@
 [`log_me`]
 ========
 
-[`log_me`] is a simple logger utility with configurable <font color="red">c</font><font color="orange">o</font><font color="yellow">l</font><font color="green">o</font><font color="cyan">r</font><font color="purple">s</font> and log levels out of the box, using simple `print` under the hood.
+[`log_me`] is a simple logger utility with configurable colors and log levels out of the box, using simple `print` under the hood.
 
 __Note__, that your console must support [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code) for colors to be visible.
 
@@ -9,6 +9,7 @@ __Note__, that your console must support [ANSI escape codes](https://en.wikipedi
 
 * [Getting started](#getting-started)
 * [Usage](#usage)
+  * [File output](#file-output)
 * [Configuration](#configuration)
 * [Roadmap](#roadmap)
 
@@ -80,12 +81,45 @@ void main() {
 ```
 
 
+### File output
+
+As of now, outputting to a file is possible by using the `LogOptions.output` argument, for example, like this:
+
+```dart
+Log.options = LogOptions(
+  output: (record, options) {
+    // File to log records to.
+    final File file = File('log.txt');
+
+    // Appends the [file] with [LogRecord.format]ted record.
+    file.writeAsStringSync(
+      // Note, that you may use the different [LogOptions] here in order, for
+      // example, to see different outputs in the console and in the file.
+      //
+      // Just remember, that ANSI escape codes won't render the colors, it's
+      // mostly a console only feature, so be sure to use [LogColors.none].
+      //
+      // Notice, that EVERY record calls this function, so you must check the
+      // [LogLevel]s by yourself, whether you want this record to be written
+      // to a file, or not.
+      '${record.format(options.copyWith(colors: LogColors.none))}\n',
+      mode: FileMode.append,
+    );
+
+    // Invokes the default output (simply a [print] invoke, if record's level
+    // is higher or equal to the [LogOptions.level] set).
+    LogOptions.defaultOutput(record, options);
+  },
+);
+```
+
+
 
 
 ## Configuration
 
 
-### <font color="red">C</font><font color="orange">o</font><font color="yellow">l</font><font color="green">o</font><font color="cyan">r</font><font color="purple">s</font>
+### Supported colors
 
 - White
 - Black
@@ -96,7 +130,7 @@ void main() {
 - Cyan
 
 
-### Levels
+### Log levels
 
 - All
 - Fatal
@@ -108,7 +142,7 @@ void main() {
 
 
 
-### Options
+### Logger options
 
 ```dart
 /// Indicator whether date of the records should be logged.
@@ -140,6 +174,26 @@ final LogLevel level;
 
 /// [LogColors] of the logs.
 final LogColors colors;
+
+/// Callback, called when a new [LogRecord] is retrieved.
+///
+/// If not specified, then logger uses the [defaultOutput].
+///
+/// Note, that you may invoke the [defaultOutput] in this callback:
+///
+/// ```dart
+/// output: (record, options) {
+///   final File file = File('log.txt');
+///
+///   file.writeAsStringSync(
+///     '${record.format(options.copyWith(colors: LogColors.none))}\n',
+///     mode: FileMode.append,
+///   );
+///
+///   LogOptions.defaultOutput(record, options);
+/// }
+/// ```
+final void Function(LogRecord record, LogOptions options) output;
 ```
 
 
@@ -147,8 +201,7 @@ final LogColors colors;
 
 ## Roadmap
 
-- [ ] 1. File output.
-- [ ] 2. Sentry integration.
+- [ ] Sentry integration.
 
 
 
