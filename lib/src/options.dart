@@ -1,3 +1,5 @@
+import 'record.dart';
+
 /// Level to log.
 enum LogLevel {
   off,
@@ -19,6 +21,7 @@ class LogOptions {
     this.levelStamp = true,
     this.utc = true,
     this.colors = const LogColors(),
+    this.output = defaultOutput,
   });
 
   /// Indicator whether date of the records should be logged.
@@ -49,7 +52,61 @@ class LogOptions {
   final LogLevel level;
 
   /// [LogColors] of the logs.
+  ///
+  /// Set [LogColors.none], to completely omit ANSI escape codes from the
+  /// output.
   final LogColors colors;
+
+  /// Callback, called when a new [LogRecord] is retrieved.
+  ///
+  /// If not specified, then logger uses the [defaultOutput].
+  ///
+  /// Note, that you may invoke the [defaultOutput] in this callback:
+  ///
+  /// ```dart
+  /// output: (record, options) {
+  ///   final File file = File('log.txt');
+  ///
+  ///   file.writeAsStringSync(
+  ///     '${record.format(options.copyWith(colors: LogColors.none))}\n',
+  ///     mode: FileMode.append,
+  ///   );
+  ///
+  ///   LogOptions.defaultOutput(record, options);
+  /// }
+  /// ```
+  final void Function(LogRecord record, LogOptions options) output;
+
+  /// Creates the new [LogOptions] with the non-`null` fields overwritten.
+  LogOptions copyWith({
+    LogLevel? level,
+    bool? dateStamp,
+    bool? timeStamp,
+    bool? levelStamp,
+    bool? utc,
+    LogColors? colors,
+    void Function(LogRecord record, LogOptions options)? output,
+  }) =>
+      LogOptions(
+        level: level ?? this.level,
+        dateStamp: dateStamp ?? this.dateStamp,
+        timeStamp: timeStamp ?? this.timeStamp,
+        levelStamp: levelStamp ?? this.levelStamp,
+        utc: utc ?? this.utc,
+        colors: colors ?? this.colors,
+        output: output ?? this.output,
+      );
+
+  /// Invokes [print] with [LogRecord.format], if [LogLevel] is higher or equal
+  /// to the [LogOptions.level] set.
+  ///
+  /// Intended to be used as a default [output].
+  static void defaultOutput(LogRecord record, LogOptions options) {
+    if (record.level.index <= options.level.index) {
+      // ignore: avoid_print
+      print(record.format(options));
+    }
+  }
 }
 
 /// [LogColor]s of the logs to print.
@@ -62,6 +119,16 @@ class LogColors {
     this.debug = LogColor.blue,
     this.trace = LogColor.magenta,
   });
+
+  /// [LogColors] with [LogColor.none] set everywhere.
+  static const LogColors none = LogColors(
+    fatal: LogColor.none,
+    error: LogColor.none,
+    warning: LogColor.none,
+    info: LogColor.none,
+    debug: LogColor.none,
+    trace: LogColor.none,
+  );
 
   /// [LogColor] of the [LogLevel.fatal].
   final LogColor fatal;
