@@ -22,7 +22,7 @@ __Note__, that your console must support [ANSI escape codes](https://en.wikipedi
 
 ```yaml
 dependencies:
-  log_me: ^0.1.0
+  log_me: ^0.1.2
 ```
 
 or

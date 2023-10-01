@@ -1,3 +1,11 @@
+# 0.1.3 - WIP
+
+### Fixed
+
+- Invalid PR links in CHANGELOG.
+
+
+
 ## 0.1.2
 
 ### Added
@@ -10,7 +18,7 @@
 
 - `Colors` phrase not rendering in README. ([#5])
 
-[#5]: https://github.com/lapuske/log_me/pulls/5
+[#5]: https://github.com/lapuske/log_me/pull/5
 
 
 
