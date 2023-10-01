@@ -1,6 +1,6 @@
 name: log_me
 description: Colorful logger utility.
-version: 0.1.1
+version: 0.1.2
 repository: https://github.com/lapuske/log_me
 
 environment:
