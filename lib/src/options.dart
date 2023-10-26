@@ -1,3 +1,5 @@
+import 'color.dart';
+import 'print/io.dart' if (dart.library.html) 'print/web.dart';
 import 'record.dart';
 
 /// Level to log.
@@ -104,7 +106,7 @@ class LogOptions {
   static void defaultOutput(LogRecord record, LogOptions options) {
     if (record.level.index <= options.level.index) {
       // ignore: avoid_print
-      print(record.format(options));
+      display(record.format(options), record.level.color(options.colors));
     }
   }
 }
@@ -149,15 +151,22 @@ class LogColors {
   final LogColor trace;
 }
 
-/// Available colors of the logs.
-enum LogColor {
-  none,
-  green,
-  red,
-  yellow,
-  blue,
-  magenta,
-  cyan,
-  white,
-  black,
+/// Extension adding ability to retrieve [LogColor] from the [LogLevel].
+extension on LogLevel {
+  /// Returns [LogColor] associated with this [LogLevel] according to the
+  /// provided [colors].
+  LogColor color(LogColors colors) {
+    return switch (this) {
+      LogLevel.fatal => colors.fatal,
+      LogLevel.error => colors.error,
+      LogLevel.warning => colors.warning,
+      LogLevel.info => colors.info,
+      LogLevel.debug => colors.debug,
+      LogLevel.trace => colors.trace,
+
+      // Shouldn't be invoked.
+      LogLevel.off => LogColor.none,
+      LogLevel.all => LogColor.none,
+    };
+  }
 }

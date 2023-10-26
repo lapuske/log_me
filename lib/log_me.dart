@@ -7,6 +7,7 @@ import 'src/log.dart';
 import 'src/log_impl.dart';
 import 'src/options.dart';
 
+export 'src/color.dart';
 export 'src/log.dart';
 export 'src/options.dart';
 export 'src/record.dart';

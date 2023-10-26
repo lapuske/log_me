@@ -53,49 +53,11 @@ class LogRecord {
       }
     }
 
-    return buffer.toString().color(level.color(options.colors));
+    return buffer.toString();
   }
 
   @override
   String toString() => format();
-}
-
-/// Extension adding ability to retrieve [LogColor] from the [LogLevel].
-extension on LogLevel {
-  /// Returns [LogColor] associated with this [LogLevel] according to the
-  /// provided [colors].
-  LogColor color(LogColors colors) {
-    return switch (this) {
-      LogLevel.fatal => colors.fatal,
-      LogLevel.error => colors.error,
-      LogLevel.warning => colors.warning,
-      LogLevel.info => colors.info,
-      LogLevel.debug => colors.debug,
-      LogLevel.trace => colors.trace,
-
-      // Shouldn't be invoked.
-      LogLevel.off => LogColor.none,
-      LogLevel.all => LogColor.none,
-    };
-  }
-}
-
-/// Extension adding ability to retrieve [String] with ANSI escape codes.
-extension on String {
-  /// Returns this [String] with ANSI escape codes for the [color].
-  String color(LogColor color) {
-    return switch (color) {
-      LogColor.none => this,
-      LogColor.black => '\x1B[30m$this\x1B[0m',
-      LogColor.red => '\x1B[31m$this\x1B[0m',
-      LogColor.green => '\x1B[32m$this\x1B[0m',
-      LogColor.yellow => '\x1B[33m$this\x1B[0m',
-      LogColor.blue => '\x1B[34m$this\x1B[0m',
-      LogColor.magenta => '\x1B[35m$this\x1B[0m',
-      LogColor.cyan => '\x1B[36m$this\x1B[0m',
-      LogColor.white => '\x1B[37m$this\x1B[0m',
-    };
-  }
 }
 
 /// Extension adding ability to retrieve date only or time only parts of
